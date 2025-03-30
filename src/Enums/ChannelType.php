@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lib\Otp\Enums;
+namespace Horlerdipo\SimpleOtp\Enums;
 
 enum ChannelType: string
 {

@@ -1,6 +1,9 @@
 <?php
 
 // config for Horlerdipo/SimpleOtp
+
+use Horlerdipo\SimpleOtp\Enums\ChannelType;
+
 return [
     'length' => env('OTP_LENGTH', 6),
 
@@ -14,5 +17,5 @@ return [
 
     'numbers_only' => true,
 
-    //TODO: implement config for otps that can only be tried a number of times
+    // TODO: implement config for otps that can only be tried a number of times
 ];

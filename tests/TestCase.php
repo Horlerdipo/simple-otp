@@ -2,9 +2,9 @@
 
 namespace Horlerdipo\SimpleOtp\Tests;
 
+use Horlerdipo\SimpleOtp\SimpleOtpServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Horlerdipo\SimpleOtp\SimpleOtpServiceProvider;
 
 class TestCase extends Orchestra
 {

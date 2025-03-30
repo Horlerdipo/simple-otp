@@ -2,9 +2,9 @@
 
 namespace Horlerdipo\SimpleOtp;
 
+use Horlerdipo\SimpleOtp\Commands\SimpleOtpCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Horlerdipo\SimpleOtp\Commands\SimpleOtpCommand;
 
 class SimpleOtpServiceProvider extends PackageServiceProvider
 {
@@ -19,6 +19,6 @@ class SimpleOtpServiceProvider extends PackageServiceProvider
             ->name('simple-otp')
             ->hasConfigFile()
             ->hasMigration('create_simple_otp_table');
-//            ->hasCommand(SimpleOtpCommand::class);
+        //            ->hasCommand(SimpleOtpCommand::class);
     }
 }
