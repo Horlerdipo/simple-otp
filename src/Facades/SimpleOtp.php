@@ -1,0 +1,16 @@
+<?php
+
+namespace Horlerdipo\SimpleOtp\Facades;
+
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @see \Horlerdipo\SimpleOtp\SimpleOtp
+ */
+class SimpleOtp extends Facade
+{
+    protected static function getFacadeAccessor(): string
+    {
+        return \Horlerdipo\SimpleOtp\SimpleOtp::class;
+    }
+}
