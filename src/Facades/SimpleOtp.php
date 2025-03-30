@@ -2,6 +2,7 @@
 
 namespace Horlerdipo\SimpleOtp\Facades;
 
+use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -11,6 +12,6 @@ class SimpleOtp extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Horlerdipo\SimpleOtp\SimpleOtp::class;
+        return OtpContract::class;
     }
 }

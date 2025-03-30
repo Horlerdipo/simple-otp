@@ -2,7 +2,6 @@
 
 namespace Horlerdipo\SimpleOtp;
 
-use Horlerdipo\SimpleOtp\Commands\SimpleOtpCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
