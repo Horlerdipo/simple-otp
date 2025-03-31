@@ -17,7 +17,7 @@ class SimpleOtpServiceProvider extends PackageServiceProvider
         $package
             ->name('simple-otp')
             ->hasConfigFile()
-            ->hasMigration('create_simple_otp_table');
+            ->hasMigration('create_otp_table');
         //            ->hasCommand(SimpleOtpCommand::class);
     }
 }
