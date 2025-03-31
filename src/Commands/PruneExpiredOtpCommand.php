@@ -2,14 +2,8 @@
 
 namespace Horlerdipo\SimpleOtp\Commands;
 
-use App\Enums\EventStatus;
-use App\Enums\InvitationStatus;
-use App\Events\Event\EventReminder;
-use App\Models\Event;
-use App\Models\Invitation;
 use Horlerdipo\SimpleOtp\Models\Otp;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 class PruneExpiredOtpCommand extends Command

@@ -20,6 +20,4 @@ trait StoresOtp
             'token' => $hashToken ? Hash::make($token) : $token,
         ]);
     }
-
-    abstract protected function channel(): string;
 }

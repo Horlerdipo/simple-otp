@@ -25,7 +25,7 @@ class Email implements OtpContract
     ) {}
 
     /**
-     * @param  array<string, string>  $templateData
+     * @param  array<string, mixed>  $templateData
      *
      * @throws InvalidOtpLengthException
      */
@@ -50,8 +50,8 @@ class Email implements OtpContract
     }
 
     /**
-     * @param  array<string, string>  $options
-     * @return array<string, string>
+     * @param  array{use?: bool}  $options
+     * @return array{status: bool, message: string}
      */
     public function verify(string $destination, string $purpose, string $token, array $options = []): array
     {

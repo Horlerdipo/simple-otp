@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Hash;
 
 trait VerifiesOtp
 {
+    /**
+     * @return array{status: bool, message: string}
+     */
     public function verifyOtp(string $destination, string $token, string $purpose, bool $use = true): array
     {
 

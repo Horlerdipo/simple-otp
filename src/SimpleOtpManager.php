@@ -14,7 +14,9 @@ class SimpleOtpManager extends Manager implements OtpContract
     public string $otpTemplate = '';
 
     /**
-     * @throws Exception
+     * @param  array<string, mixed>  $templateData
+     *
+     * @throws OtpException
      */
     public function send(string $destination, string $purpose, array $templateData): void
     {
@@ -27,6 +29,9 @@ class SimpleOtpManager extends Manager implements OtpContract
     }
 
     /**
+     * @param  array{use?: bool}  $options
+     * @return array{status: bool, message: string}
+     *
      * @throws OtpException
      */
     public function verify(string $destination, string $purpose, string $token, array $options = []): array
@@ -39,6 +44,9 @@ class SimpleOtpManager extends Manager implements OtpContract
         }
     }
 
+    /**
+     * @return $this
+     */
     public function setTemplate(string $template): self
     {
         $this->otpTemplate = $template;
@@ -46,7 +54,10 @@ class SimpleOtpManager extends Manager implements OtpContract
         return $this;
     }
 
-    public function getDefaultDriver()
+    /**
+     * @return mixed|string
+     */
+    public function getDefaultDriver(): mixed
     {
         return $this->config->get('otp.default_channel', ChannelType::EMAIL->value);
     }
@@ -54,24 +65,13 @@ class SimpleOtpManager extends Manager implements OtpContract
     public function createEmailDriver(): Email
     {
         return new Email(
-            length: $this->config->get('otp.length'),
-            expiresIn: $this->config->get('otp.expires_in'),
-            hashToken: $this->config->get('otp.hash'),
-            template: ! empty($this->otpTemplate) ? $this->otpTemplate : $this->config->get('otp.email_template_location'),
-            numbersOnly: $this->config->get('otp.numbers_only')
+            length: $this->config->get('simple-otp.length'),
+            expiresIn: $this->config->get('simple-otp.expires_in'),
+            hashToken: $this->config->get('simple-otp.hash'),
+            template: ! empty($this->otpTemplate) ? $this->otpTemplate : $this->config->get('simple-otp.email_template_location'),
+            numbersOnly: $this->config->get('simple-otp.numbers_only')
         );
     }
-
-    //    public function createSmsDriver(): Sms
-    //    {
-    //        return new Sms(
-    //            $this->length,
-    //            $this->expiration,
-    //            $this->shouldHash,
-    //            $this->emailTemplate,
-    //            $this->numbersOnly
-    //        );
-    //    }
 
     public function channel(): string
     {

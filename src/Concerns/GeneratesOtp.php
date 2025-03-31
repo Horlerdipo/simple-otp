@@ -5,6 +5,7 @@ namespace Horlerdipo\SimpleOtp\Concerns;
 use Exception;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
 use Illuminate\Support\Str;
+use Random\RandomException;
 
 trait GeneratesOtp
 {
@@ -26,7 +27,7 @@ trait GeneratesOtp
     }
 
     /**
-     * @throws Exception
+     * @throws RandomException
      */
     private function generateNumericOtp(int $length): string
     {
