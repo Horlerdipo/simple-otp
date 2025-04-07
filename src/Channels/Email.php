@@ -2,7 +2,6 @@
 
 namespace Horlerdipo\SimpleOtp\Channels;
 
-use Horlerdipo\SimpleOtp\Concerns\ConfiguresOtp;
 use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
 use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
 use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
@@ -28,10 +27,8 @@ class Email implements OtpContract
     ) {}
 
     /**
-     * @param string $destination
-     * @param string $purpose
-     * @param array<string, mixed> $templateData
-     * @param string $queue
+     * @param  array<string, mixed>  $templateData
+     *
      * @throws InvalidOtpExpirationTimeException
      * @throws InvalidOtpLengthException
      * @throws OtpException

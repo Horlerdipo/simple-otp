@@ -2,18 +2,15 @@
 
 namespace Horlerdipo\SimpleOtp\Concerns;
 
-use Exception;
-use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-use Horlerdipo\SimpleOtp\SimpleOtpManager;
-use Illuminate\Support\Str;
 
 trait ConfiguresOtp
 {
     public function hash(bool $hash = true): self
     {
         $this->hashToken = $hash;
+
         return $this;
     }
 
@@ -26,6 +23,7 @@ trait ConfiguresOtp
             throw new InvalidOtpLengthException('OTP length must be greater than 0');
         }
         $this->length = $length;
+
         return $this;
     }
 
@@ -38,12 +36,14 @@ trait ConfiguresOtp
             throw new InvalidOtpExpirationTimeException('OTP expiration time must be greater than 0');
         }
         $this->expiresIn = $expiresIn;
+
         return $this;
     }
 
-    public function numbersOnly(bool $numbersOnly=true): self
+    public function numbersOnly(bool $numbersOnly = true): self
     {
         $this->numbersOnly = $numbersOnly;
+
         return $this;
     }
 

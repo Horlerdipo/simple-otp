@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Horlerdipo\SimpleOtp\SimpleOtpManager
+ *
  * @method static void send(string $destination, string $purpose, array $templateData = [])
  * @method static array{status: bool, message: string} verify(string $destination, string $purpose, string $token, array $options = [])
  * @method static self template(string $template)

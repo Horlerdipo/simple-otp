@@ -24,6 +24,6 @@ return [
         'used_otp' => 'This OTP has already been used',
         'expired_otp' => 'This OTP has expired',
         'valid_otp' => 'This OTP is correct',
-    ]
+    ],
     // TODO: implement config for otps that can only be tried a number of times
 ];

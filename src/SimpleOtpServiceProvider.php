@@ -4,7 +4,6 @@ namespace Horlerdipo\SimpleOtp;
 
 use Horlerdipo\SimpleOtp\Commands\PruneExpiredOtpCommand;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
-use Illuminate\Container\Container;
 use Illuminate\Foundation\Application;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -26,7 +25,7 @@ class SimpleOtpServiceProvider extends PackageServiceProvider
             ->hasCommand(PruneExpiredOtpCommand::class);
 
         $this->app->bind(OtpContract::class, function (Application $app) {
-           return new SimpleOtpManager($app);
+            return new SimpleOtpManager($app);
         });
     }
 }

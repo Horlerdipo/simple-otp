@@ -2,16 +2,12 @@
 
 namespace Horlerdipo\SimpleOtp\Channels;
 
-use Horlerdipo\SimpleOtp\Concerns\ConfiguresOtp;
 use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
 use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
 use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-use Horlerdipo\SimpleOtp\Mail\OtpMail;
-use Illuminate\Queue\QueueManager;
-use Illuminate\Support\Facades\Mail;
 
 class BlackHole implements OtpContract
 {
@@ -61,7 +57,8 @@ class BlackHole implements OtpContract
         );
     }
 
-    public function getToken(): string {
+    public function getToken(): string
+    {
         return $this->token;
     }
 }
