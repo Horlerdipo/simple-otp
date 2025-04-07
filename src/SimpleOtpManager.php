@@ -16,13 +16,17 @@ class SimpleOtpManager extends Manager implements OtpContract
     use ConfiguresOtp;
 
     public string $template = '';
+
     public ?bool $hashToken = null;
+
     public ?int $length = null;
+
     public ?int $expiresIn = null;
+
     public ?bool $numbersOnly = null;
 
     /**
-     * @param array<string, mixed> $templateData
+     * @param  array<string, mixed>  $templateData
      *
      * @throws OtpException
      */
@@ -31,12 +35,12 @@ class SimpleOtpManager extends Manager implements OtpContract
         try {
             $this->driver()->send(destination: $destination, purpose: $purpose, templateData: $templateData);
         } catch (Exception $e) {
-            throw new OtpException('Failed to send OTP: ' . $e->getMessage());
+            throw new OtpException('Failed to send OTP: '.$e->getMessage());
         }
     }
 
     /**
-     * @param array{use?: bool} $options
+     * @param  array{use?: bool}  $options
      * @return array{status: bool, message: string}
      *
      * @throws OtpException
@@ -47,7 +51,7 @@ class SimpleOtpManager extends Manager implements OtpContract
         try {
             return $this->driver()->verify(destination: $destination, token: $token, purpose: $purpose, options: $options);
         } catch (Exception $e) {
-            throw new OtpException('Failed to send OTP: ' . $e->getMessage());
+            throw new OtpException('Failed to send OTP: '.$e->getMessage());
         }
     }
 
@@ -65,7 +69,7 @@ class SimpleOtpManager extends Manager implements OtpContract
             length: is_null($this->length) ? $this->config->get('simple-otp.length') : $this->length,
             expiresIn: is_null($this->expiresIn) ? $this->config->get('simple-otp.expires_in') : $this->expiresIn,
             hashToken: is_null($this->hashToken) ? $this->config->get('simple-otp.hash') : $this->hashToken,
-            template: !empty($this->otpTemplate) ? $this->otpTemplate : $this->config->get('simple-otp.email_template_location'),
+            template: ! empty($this->otpTemplate) ? $this->otpTemplate : $this->config->get('simple-otp.email_template_location'),
             numbersOnly: is_null($this->numbersOnly) ? $this->config->get('simple-otp.numbers_only') : $this->numbersOnly,
         );
     }
@@ -76,10 +80,11 @@ class SimpleOtpManager extends Manager implements OtpContract
             length: is_null($this->length) ? $this->config->get('simple-otp.length') : $this->length,
             expiresIn: is_null($this->expiresIn) ? $this->config->get('simple-otp.expires_in') : $this->expiresIn,
             hashToken: is_null($this->hashToken) ? $this->config->get('simple-otp.hash') : $this->hashToken,
-            template: !empty($this->template) ? $this->template : $this->config->get('simple-otp.email_template_location'),
+            template: ! empty($this->template) ? $this->template : $this->config->get('simple-otp.email_template_location'),
             numbersOnly: is_null($this->numbersOnly) ? $this->config->get('simple-otp.numbers_only') : $this->numbersOnly,
         );
     }
+
     public function channel(): string
     {
         return $this->driver()->channel();

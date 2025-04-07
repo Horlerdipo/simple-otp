@@ -34,7 +34,7 @@ trait VerifiesOtp
                     'message' => config('simple-otp.messages.incorrect_otp'),
                 ];
             }
-        }else {
+        } else {
             if ($otpRecord->token !== $token) {
                 return [
                     'status' => false,

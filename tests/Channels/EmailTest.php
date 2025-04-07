@@ -6,6 +6,7 @@ use Horlerdipo\SimpleOtp\Mail\OtpMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+
 use function Pest\Laravel\assertDatabaseHas;
 
 beforeEach(function () {
@@ -34,19 +35,19 @@ it('can successfully configure otp configurations on emails', function () {
 });
 
 it('can successfully send unhashed otp over email', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = false;
 
-    //ACT
+    // ACT
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
 
-    //ASSERT
+    // ASSERT
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
         'destination_type' => $this->emailChannel->channel(),
         'is_used' => false,
-        'is_hashed' => false
+        'is_hashed' => false,
     ]);
 
     $token = DB::table(config('simple-otp.table_name'))
@@ -64,24 +65,25 @@ it('can successfully send unhashed otp over email', function () {
         $extractedOtp = $matches[0] ?? null;
 
         $this->assertEquals($token, $extractedOtp);
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($token);
     });
 });
 
 it('can successfully send hashed otp over email', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = true;
 
-    //ACT
+    // ACT
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
 
-    //ASSERT
+    // ASSERT
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
         'destination_type' => $this->emailChannel->channel(),
         'is_used' => false,
-        'is_hashed' => true
+        'is_hashed' => true,
     ]);
 
     Mail::assertSent(OtpMail::class, function (OtpMail $mail) {
@@ -99,25 +101,26 @@ it('can successfully send hashed otp over email', function () {
             ->value('token');
 
         expect(Hash::check($extractedOtp, $token))->toBeTrue();
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($extractedOtp);
     });
 });
 
 it('successfully returns error on wrong otp', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
 
-    //ACT
+    // ACT
     $response = $this->emailChannel->verify($this->otpDestination, $this->otpPurpose, 'wrong-otp');
 
-    //ASSERT
+    // ASSERT
     expect($response)->toBeArray();
     expect($response['status'])->toBe(false);
     expect($response['message'])->toBe(config('simple-otp.messages.incorrect_otp'));
 });
 
 it('successfully returns error on expired otp', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = false;
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
     Mail::assertSent(OtpMail::class, function (OtpMail $mail) {
@@ -125,10 +128,11 @@ it('successfully returns error on expired otp', function () {
 
         preg_match('/\b\d{6}\b/', $html, $matches);
         $this->token = $matches[0] ?? null;
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($this->token);
     });
 
-    //ACT
+    // ACT
     DB::table(config('simple-otp.table_name'))
         ->where('destination', $this->otpDestination)
         ->where('purpose', $this->otpPurpose)
@@ -142,14 +146,14 @@ it('successfully returns error on expired otp', function () {
 
     $response = $this->emailChannel->verify($this->otpDestination, $this->otpPurpose, $this->token);
 
-    //ASSERT
+    // ASSERT
     expect($response)->toBeArray();
     expect($response['status'])->toBe(false);
     expect($response['message'])->toBe(config('simple-otp.messages.expired_otp'));
 });
 
 it('successfully returns error on used otp', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = false;
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
     Mail::assertSent(OtpMail::class, function (OtpMail $mail) {
@@ -157,10 +161,11 @@ it('successfully returns error on used otp', function () {
 
         preg_match('/\b\d{6}\b/', $html, $matches);
         $this->token = $matches[0] ?? null;
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($this->token);
     });
 
-    //ACT
+    // ACT
     DB::table(config('simple-otp.table_name'))
         ->where('destination', $this->otpDestination)
         ->where('purpose', $this->otpPurpose)
@@ -174,14 +179,14 @@ it('successfully returns error on used otp', function () {
 
     $response = $this->emailChannel->verify($this->otpDestination, $this->otpPurpose, $this->token);
 
-    //ASSERT
+    // ASSERT
     expect($response)->toBeArray();
     expect($response['status'])->toBe(false);
     expect($response['message'])->toBe(config('simple-otp.messages.used_otp'));
 });
 
 it('can successfully verify unhashed otp', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = false;
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
     Mail::assertSent(OtpMail::class, function (OtpMail $mail) {
@@ -189,13 +194,14 @@ it('can successfully verify unhashed otp', function () {
 
         preg_match('/\b\d{6}\b/', $html, $matches);
         $this->token = $matches[0] ?? null;
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($this->token);
     });
 
-    //ACT
+    // ACT
     $response = $this->emailChannel->verify($this->otpDestination, $this->otpPurpose, $this->token);
 
-    //ASSERT
+    // ASSERT
     expect($response)->toBeArray();
     expect($response['status'])->toBe(true);
     expect($response['message'])->toBe(config('simple-otp.messages.valid_otp'));
@@ -204,12 +210,12 @@ it('can successfully verify unhashed otp', function () {
         'purpose' => $this->otpPurpose,
         'destination_type' => $this->emailChannel->channel(),
         'is_used' => true,
-        'is_hashed' => false
+        'is_hashed' => false,
     ]);
 });
 
 it('can successfully verify hashed otp', function () {
-    //ARRANGE
+    // ARRANGE
     $this->emailChannel->hashToken = true;
     $this->emailChannel->send($this->otpDestination, $this->otpPurpose);
     Mail::assertSent(OtpMail::class, function (OtpMail $mail) {
@@ -217,13 +223,14 @@ it('can successfully verify hashed otp', function () {
 
         preg_match('/\b\d{6}\b/', $html, $matches);
         $this->token = $matches[0] ?? null;
+
         return $mail->hasTo($this->otpDestination) && $mail->assertSeeInHtml($this->token);
     });
 
-    //ACT
+    // ACT
     $response = $this->emailChannel->verify($this->otpDestination, $this->otpPurpose, $this->token);
 
-    //ASSERT
+    // ASSERT
     expect($response)->toBeArray();
     expect($response['status'])->toBe(true);
     expect($response['message'])->toBe(config('simple-otp.messages.valid_otp'));
@@ -232,6 +239,6 @@ it('can successfully verify hashed otp', function () {
         'purpose' => $this->otpPurpose,
         'destination_type' => $this->emailChannel->channel(),
         'is_used' => true,
-        'is_hashed' => true
+        'is_hashed' => true,
     ]);
 });
