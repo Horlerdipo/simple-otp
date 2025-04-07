@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('simple_otp_table', function (Blueprint $table) {
+        Schema::create(config('simple-otp.table_name'), function (Blueprint $table) {
             $table->id();
             $table->string('destination');
             $table->string('destination_type');

@@ -8,16 +8,16 @@ use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
 use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
-use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-use Horlerdipo\SimpleOtp\Exceptions\OtpException;
 use Horlerdipo\SimpleOtp\Mail\OtpMail;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Mail;
 
-class Email implements OtpContract
+class BlackHole implements OtpContract
 {
     use GeneratesOtp, StoresOtp, VerifiesOtp;
+
+    public string $token = '';
 
     public function __construct(
         public int $length,
@@ -28,38 +28,23 @@ class Email implements OtpContract
     ) {}
 
     /**
-     * @param string $destination
-     * @param string $purpose
-     * @param array<string, mixed> $templateData
-     * @param string $queue
-     * @throws InvalidOtpExpirationTimeException
+     * @param  array<string, mixed>  $templateData
+     *
      * @throws InvalidOtpLengthException
-     * @throws OtpException
      */
     public function send(string $destination, string $purpose, array $templateData = [], string $queue = 'default'): void
     {
-        try {
-            $token = $this->generateOtp($this->length, $this->numbersOnly);
-            $this->storeOtp(
-                destination: $destination, token: $token, purpose: $purpose,
-                expiration: $this->expiresIn, hashToken: $this->hashToken
-            );
 
-            (app(QueueManager::class)->push(function () use ($templateData, $purpose, $token, $destination) {
-                Mail::to($destination)
-                    ->send(new OtpMail($token, $this->template, ['purpose' => $purpose, ...$templateData]));
-            }, queue: $queue));
-        } catch (InvalidOtpLengthException|InvalidOtpExpirationTimeException $exception) {
-            throw $exception;
-        } catch (\Exception $e) {
-            throw new OtpException($e->getMessage());
-        }
-
+        $this->token = $this->generateOtp($this->length, $this->numbersOnly);
+        $this->storeOtp(
+            destination: $destination, token: $this->token, purpose: $purpose,
+            expiration: $this->expiresIn, hashToken: $this->hashToken
+        );
     }
 
     public function channel(): string
     {
-        return ChannelType::EMAIL->value;
+        return ChannelType::BLACKHOLE->value;
     }
 
     /**
@@ -74,5 +59,9 @@ class Email implements OtpContract
             purpose: $purpose,
             use: $options['use'] ?? true
         );
+    }
+
+    public function getToken(): string {
+        return $this->token;
     }
 }

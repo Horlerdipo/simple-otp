@@ -22,7 +22,7 @@ trait VerifiesOtp
         if (! $otpRecord) {
             return [
                 'status' => false,
-                'message' => 'This OTP is incorrect',
+                'message' => config('simple-otp.messages.incorrect_otp'),
             ];
         }
 
@@ -31,29 +31,29 @@ trait VerifiesOtp
             if (! $isTokenCorrect) {
                 return [
                     'status' => false,
-                    'message' => 'This OTP is incorrect',
+                    'message' => config('simple-otp.messages.incorrect_otp'),
                 ];
             }
-        }
-
-        if ($otpRecord->token !== $token) {
-            return [
-                'status' => false,
-                'message' => 'This OTP is incorrect',
-            ];
+        }else {
+            if ($otpRecord->token !== $token) {
+                return [
+                    'status' => false,
+                    'message' => config('simple-otp.messages.incorrect_otp'),
+                ];
+            }
         }
 
         if ($otpRecord->is_used) {
             return [
                 'status' => false,
-                'message' => 'This OTP has already been used',
+                'message' => config('simple-otp.messages.used_otp'),
             ];
         }
 
         if ($otpRecord->expires_at <= now()) {
             return [
                 'status' => false,
-                'message' => 'This OTP has expired',
+                'message' => config('simple-otp.messages.expired_otp'),
             ];
         }
 
@@ -63,8 +63,7 @@ trait VerifiesOtp
 
         return [
             'status' => true,
-            'message' => 'This OTP is valid',
+            'message' => config('simple-otp.messages.valid_otp'),
         ];
-
     }
 }
