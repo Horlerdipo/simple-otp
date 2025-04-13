@@ -1,4 +1,4 @@
-# A OTP implementation for Laravel 
+# A Simple OTP Package for Laravel 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/horlerdipo/simple-otp.svg?style=flat-square)](https://packagist.org/packages/horlerdipo/simple-otp)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/horlerdipo/simple-otp/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/horlerdipo/simple-otp/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -105,7 +105,7 @@ This Laravel package provides a flexible and pluggable One-Time Password (OTP) s
 ### Features
 - OTP generation and validation
 - Facade support for simple usage
-- Built-in Email and Null channels
+- Built-in Email and BlackHole channels
 - Easy integration of custom delivery channels
 - Coming soon: Twilio, Termii SMS channels, Redis Storage for OTPs
 - Coming soon: TOTP (Time-based One-Time Password) 
@@ -186,7 +186,7 @@ php artisan vendor:publish --tag="simple-otp-views"
 
 ### Basic Setup
 After installation, make sure your .env and config/otp.php are configured correctly, the default channel is Email so OTPs will be sent to emails.
-You can change the default channel on the config file at runtime(add link to the channel) as well.
+You can change the default channel on the config file at runtime as well.
 
 ### Sending an OTP
 ```php
@@ -332,10 +332,10 @@ class SmsChannel extends BaseChannel implements OtpContract, ChannelContract
 }
 ```
 The ```verifyOtp()``` , ```generateOtp()``` and ```storeOtp()``` are already implemented in the abstract class, all you need to 
-be concerned about it the ```sendOtpToSms()``` method which defines how the OTP will be sent to the user.
+be concerned about is the ```sendOtpToSms()``` method which defines how the OTP will be sent to the user.
 
 ### Using the Manager Class directly
-If you are not a fan of Facades, you can also simply call the underlying ```Horlerdipo\SimpleOtp\SSimpleOtpManager``` class directly like below
+If you are not a fan of Facades, you can also simply call the underlying ```Horlerdipo\SimpleOtp\SimpleOtpManager``` class directly like below
 ```php
 Route::get('/generate-otp', function (\Illuminate\Http\Request $request, \Horlerdipo\SimpleOtp\SimpleOtpManager $otpManager) {
     $otpManager->channel('email')
