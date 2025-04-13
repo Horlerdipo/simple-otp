@@ -3,26 +3,16 @@
 namespace Horlerdipo\SimpleOtp\Channels;
 
 use Exception;
-use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
-use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
-use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
 use Horlerdipo\SimpleOtp\Contracts\ChannelContract;
-use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
-use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-use Horlerdipo\SimpleOtp\Exceptions\OtpException;
-use Horlerdipo\SimpleOtp\Mail\OtpMail;
 use Horlerdipo\SimpleOtp\Models\Otp as OtpModel;
-use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 abstract class BaseChannel implements ChannelContract
 {
-
     public function __construct(
         public int $length,
         public int $expiresIn,
@@ -125,13 +115,6 @@ abstract class BaseChannel implements ChannelContract
         ]);
     }
 
-    /**
-     * @param string $destination
-     * @param string $token
-     * @param string $purpose
-     * @param bool $use
-     * @return VerifyOtpResponse
-     */
     public function verifyOtp(string $destination, string $token, string $purpose, bool $use = true): VerifyOtpResponse
     {
 

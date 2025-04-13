@@ -2,8 +2,6 @@
 
 namespace Horlerdipo\SimpleOtp\Models;
 
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
@@ -18,7 +16,6 @@ use Illuminate\Support\Carbon;
  */
 class Otp extends Model
 {
-
     protected $fillable = [
         'destination', 'destination_type',
         'purpose', 'token', 'expires_at',

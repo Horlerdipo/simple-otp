@@ -8,13 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 trait VerifiesOtp
 {
-    /**
-     * @param string $destination
-     * @param string $token
-     * @param string $purpose
-     * @param bool $use
-     * @return VerifyOtpResponse
-     */
     public function verifyOtp(string $destination, string $token, string $purpose, bool $use = true): VerifyOtpResponse
     {
 

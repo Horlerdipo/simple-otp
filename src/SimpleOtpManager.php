@@ -41,11 +41,8 @@ class SimpleOtpManager extends Manager implements OtpContract
     }
 
     /**
-     * @param string $destination
-     * @param string $purpose
-     * @param string $token
-     * @param array{use?: bool} $options
-     * @return VerifyOtpResponse
+     * @param  array{use?: bool}  $options
+     *
      * @throws OtpException
      */
     public function verify(string $destination, string $purpose, string $token, array $options = []): VerifyOtpResponse
@@ -93,7 +90,7 @@ class SimpleOtpManager extends Manager implements OtpContract
         return $this->driver()->channelName();
     }
 
-    public function channel(string $channel = null): mixed
+    public function channel(?string $channel = null): mixed
     {
         return $this->driver($channel);
     }

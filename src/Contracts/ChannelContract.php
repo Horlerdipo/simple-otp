@@ -2,12 +2,8 @@
 
 namespace Horlerdipo\SimpleOtp\Contracts;
 
-use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
-use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-
 interface ChannelContract
 {
-
     public function template(string $template): self;
 
     public function hash(bool $hash): self;

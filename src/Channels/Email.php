@@ -2,9 +2,6 @@
 
 namespace Horlerdipo\SimpleOtp\Channels;
 
-use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
-use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
-use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
 use Horlerdipo\SimpleOtp\Contracts\ChannelContract;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
 use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
@@ -16,10 +13,9 @@ use Horlerdipo\SimpleOtp\Mail\OtpMail;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Mail;
 
-class Email extends BaseChannel implements OtpContract, ChannelContract
+class Email extends BaseChannel implements ChannelContract, OtpContract
 {
-
-//
+    //
     public function __construct(
         public int $length,
         public int $expiresIn,
@@ -59,11 +55,7 @@ class Email extends BaseChannel implements OtpContract, ChannelContract
     }
 
     /**
-     * @param string $destination
-     * @param string $purpose
-     * @param string $token
-     * @param array{use?: bool} $options
-     * @return VerifyOtpResponse
+     * @param  array{use?: bool}  $options
      */
     public function verify(string $destination, string $purpose, string $token, array $options = []): VerifyOtpResponse
     {

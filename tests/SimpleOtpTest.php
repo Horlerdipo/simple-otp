@@ -5,7 +5,6 @@ use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
-use Horlerdipo\SimpleOtp\Exceptions\OtpException;
 use Horlerdipo\SimpleOtp\Facades\SimpleOtp;
 use Horlerdipo\SimpleOtp\SimpleOtpManager;
 use Illuminate\Support\Facades\DB;
