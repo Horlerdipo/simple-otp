@@ -1,9 +1,11 @@
 <?php
 
 use Horlerdipo\SimpleOtp\Channels\BlackHole;
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
+use Horlerdipo\SimpleOtp\Exceptions\OtpException;
 use Horlerdipo\SimpleOtp\Facades\SimpleOtp;
 use Horlerdipo\SimpleOtp\SimpleOtpManager;
 use Illuminate\Support\Facades\DB;
@@ -36,16 +38,16 @@ it('can successfully set otp configurations', function () {
     // ASSERT
 
     // testing template()
-    expect($simpleOtp->template)->toBe('mails-test');
-    expect($simpleOtp->template)->not->toBe(config('simple-otp.email_template_location'));
+    expect($simpleOtp->template)->toBe('mails-test')
+        ->and($simpleOtp->template)->not->toBe(config('simple-otp.email_template_location'))
+        ->and($simpleOtp->hashToken)->toBeTrue()
+        ->and($simpleOtp->template)->not->toBe(config('simple-otp.hash'))
+        ->and($simpleOtp->length)->toBe(10)
+        ->and($simpleOtp->length)->not->toBe(config('simple-otp.length'));
 
     // testing hash()
-    expect($simpleOtp->hashToken)->toBe(true);
-    expect($simpleOtp->template)->not->toBe(config('simple-otp.hash'));
 
     // testing length()
-    expect($simpleOtp->length)->toBe(10);
-    expect($simpleOtp->length)->not->toBe(config('simple-otp.length'));
     try {
         $simpleOtp->length(-1);
     } catch (\Exception $exception) {
@@ -53,8 +55,8 @@ it('can successfully set otp configurations', function () {
     }
 
     // testing expiresIn()
-    expect($simpleOtp->expiresIn)->toBe(10);
-    expect($simpleOtp->expiresIn)->not->toBe(config('simple-otp.expires_in'));
+    expect($simpleOtp->expiresIn)->toBe(10)
+        ->and($simpleOtp->expiresIn)->not->toBe(config('simple-otp.expires_in'));
     try {
         $simpleOtp->expiresIn(-1);
     } catch (\Exception $exception) {
@@ -62,12 +64,13 @@ it('can successfully set otp configurations', function () {
     }
 
     // testing numbersOnly()
-    expect($simpleOtp->numbersOnly)->toBe(false);
-    expect($simpleOtp->numbersOnly)->not->toBe(config('simple-otp.numbers_only'));
+    expect($simpleOtp->numbersOnly)->toBeFalse()
+        ->and($simpleOtp->numbersOnly)->not->toBe(config('simple-otp.numbers_only'))
 
-    // testing channel()
-    expect($simpleOtp->channel())->toBe(ChannelType::BLACKHOLE->value);
-    expect($simpleOtp->channel())->not->toBe(ChannelType::EMAIL->value);
+        // testing $this->channelName()
+        ->and($simpleOtp->channelName())->toBe(ChannelType::BLACKHOLE->value)
+        ->and($simpleOtp->channelName())->not->toBe(ChannelType::EMAIL->value);
+
 });
 
 it('can successfully generate unhashed otp', function () {
@@ -87,7 +90,7 @@ it('can successfully generate unhashed otp', function () {
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
-        'destination_type' => $simpleOtp->channel(),
+        'destination_type' => $simpleOtp->channelName(),
         'token' => $simpleOtp->getToken(),
         'is_used' => false,
         'is_hashed' => false,
@@ -110,14 +113,14 @@ it('can successfully send hashed otp', function () {
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
-        'destination_type' => $simpleOtp->channel(),
+        'destination_type' => $simpleOtp->channelName(),
         'is_used' => false,
         'is_hashed' => true,
     ]);
     $token = DB::table(config('simple-otp.table_name'))
         ->where('destination', $this->otpDestination)
         ->where('purpose', $this->otpPurpose)
-        ->where('destination_type', $simpleOtp->channel())
+        ->where('destination_type', $simpleOtp->channelName())
         ->where('is_used', false)
         ->where('is_hashed', true)
         ->value('token');
@@ -140,9 +143,9 @@ it('successfully returns error on wrong otp', function () {
     $response = $simpleOtp->verify($this->otpDestination, $this->otpPurpose, 'wrong-otp');
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(false);
-    expect($response['message'])->toBe(config('simple-otp.messages.incorrect_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class);
+    expect($response->status)->toBe(false);
+    expect($response->message)->toBe(config('simple-otp.messages.incorrect_otp'));
 });
 
 it('successfully returns error on expired otp', function () {
@@ -158,7 +161,7 @@ it('successfully returns error on expired otp', function () {
     DB::table(config('simple-otp.table_name'))
         ->where('destination', $this->otpDestination)
         ->where('purpose', $this->otpPurpose)
-        ->where('destination_type', $simpleOtp->channel())
+        ->where('destination_type', $simpleOtp->channelName())
         ->where('is_used', false)
         ->where('is_hashed', false)
         ->update([
@@ -169,9 +172,9 @@ it('successfully returns error on expired otp', function () {
     $response = $simpleOtp->verify($this->otpDestination, $this->otpPurpose, $simpleOtp->getToken());
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(false);
-    expect($response['message'])->toBe(config('simple-otp.messages.expired_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class)
+        ->and($response->status)->toBeFalse()
+        ->and($response->message)->toBe(config('simple-otp.messages.expired_otp'));
 });
 
 it('successfully returns error on used otp', function () {
@@ -187,7 +190,7 @@ it('successfully returns error on used otp', function () {
     DB::table(config('simple-otp.table_name'))
         ->where('destination', $this->otpDestination)
         ->where('purpose', $this->otpPurpose)
-        ->where('destination_type', $simpleOtp->channel())
+        ->where('destination_type', $simpleOtp->channelName())
         ->where('is_used', false)
         ->where('is_hashed', false)
         ->update([
@@ -198,9 +201,9 @@ it('successfully returns error on used otp', function () {
     $response = $simpleOtp->verify($this->otpDestination, $this->otpPurpose, $simpleOtp->getToken());
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(false);
-    expect($response['message'])->toBe(config('simple-otp.messages.used_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class)
+        ->and($response->status)->toBeFalse()
+        ->and($response->message)->toBe(config('simple-otp.messages.used_otp'));
 });
 
 it('can successfully verify unhashed otp', function () {
@@ -217,13 +220,13 @@ it('can successfully verify unhashed otp', function () {
     $response = $simpleOtp->verify($this->otpDestination, $this->otpPurpose, $simpleOtp->getToken());
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(true);
-    expect($response['message'])->toBe(config('simple-otp.messages.valid_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class)
+        ->and($response->status)->toBeTrue()
+        ->and($response->message)->toBe(config('simple-otp.messages.valid_otp'));
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
-        'destination_type' => $simpleOtp->channel(),
+        'destination_type' => $simpleOtp->channelName(),
         'is_used' => true,
         'is_hashed' => false,
     ]);
@@ -243,13 +246,13 @@ it('can successfully verify hashed otp', function () {
     $response = $simpleOtp->verify($this->otpDestination, $this->otpPurpose, $simpleOtp->getToken());
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(true);
-    expect($response['message'])->toBe(config('simple-otp.messages.valid_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class)
+        ->and($response->status)->toBeTrue()
+        ->and($response->message)->toBe(config('simple-otp.messages.valid_otp'));
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
-        'destination_type' => $simpleOtp->channel(),
+        'destination_type' => $simpleOtp->channelName(),
         'is_used' => true,
         'is_hashed' => true,
     ]);
@@ -271,13 +274,13 @@ it('does not mark otp as used if the option is passed', function () {
     ]);
 
     // ASSERT
-    expect($response)->toBeArray();
-    expect($response['status'])->toBe(true);
-    expect($response['message'])->toBe(config('simple-otp.messages.valid_otp'));
+    expect($response)->toBeInstanceOf(VerifyOtpResponse::class)
+        ->and($response->status)->toBeTrue()
+        ->and($response->message)->toBe(config('simple-otp.messages.valid_otp'));
     assertDatabaseHas(config('simple-otp.table_name'), [
         'destination' => $this->otpDestination,
         'purpose' => $this->otpPurpose,
-        'destination_type' => $simpleOtp->channel(),
+        'destination_type' => $simpleOtp->channelName(),
         'is_used' => false,
         'is_hashed' => true,
     ]);

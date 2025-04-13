@@ -2,15 +2,20 @@
 
 namespace Horlerdipo\SimpleOtp\Concerns;
 
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Models\Otp as OtpModel;
 use Illuminate\Support\Facades\Hash;
 
 trait VerifiesOtp
 {
     /**
-     * @return array{status: bool, message: string}
+     * @param string $destination
+     * @param string $token
+     * @param string $purpose
+     * @param bool $use
+     * @return VerifyOtpResponse
      */
-    public function verifyOtp(string $destination, string $token, string $purpose, bool $use = true): array
+    public function verifyOtp(string $destination, string $token, string $purpose, bool $use = true): VerifyOtpResponse
     {
 
         $otpRecord = OtpModel::query()
@@ -20,50 +25,50 @@ trait VerifiesOtp
             ->first();
 
         if (! $otpRecord) {
-            return [
-                'status' => false,
-                'message' => config('simple-otp.messages.incorrect_otp'),
-            ];
+            return new VerifyOtpResponse(
+                false,
+                config('simple-otp.messages.incorrect_otp')
+            );
         }
 
         if ($otpRecord->is_hashed) {
             $isTokenCorrect = Hash::check($token, $otpRecord->token);
             if (! $isTokenCorrect) {
-                return [
-                    'status' => false,
-                    'message' => config('simple-otp.messages.incorrect_otp'),
-                ];
+                return new VerifyOtpResponse(
+                    false,
+                    config('simple-otp.messages.incorrect_otp')
+                );
             }
         } else {
             if ($otpRecord->token !== $token) {
-                return [
-                    'status' => false,
-                    'message' => config('simple-otp.messages.incorrect_otp'),
-                ];
+                return new VerifyOtpResponse(
+                    false,
+                    config('simple-otp.messages.incorrect_otp')
+                );
             }
         }
 
         if ($otpRecord->is_used) {
-            return [
-                'status' => false,
-                'message' => config('simple-otp.messages.used_otp'),
-            ];
+            return new VerifyOtpResponse(
+                false,
+                config('simple-otp.messages.used_otp')
+            );
         }
 
         if ($otpRecord->expires_at <= now()) {
-            return [
-                'status' => false,
-                'message' => config('simple-otp.messages.expired_otp'),
-            ];
+            return new VerifyOtpResponse(
+                false,
+                config('simple-otp.messages.expired_otp')
+            );
         }
 
         if ($use) {
             $otpRecord->update(['is_used' => true]);
         }
 
-        return [
-            'status' => true,
-            'message' => config('simple-otp.messages.valid_otp'),
-        ];
+        return new VerifyOtpResponse(
+            true,
+            config('simple-otp.messages.valid_otp')
+        );
     }
 }

@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Facade;
  * @see \Horlerdipo\SimpleOtp\SimpleOtpManager
  *
  * @method static void send(string $destination, string $purpose, array $templateData = [])
- * @method static array{status: bool, message: string} verify(string $destination, string $purpose, string $token, array $options = [])
+ * @method static [] verify(string $destination, string $purpose, string $token, array $options = [])
  * @method static self template(string $template)
  * @method static mixed|string getDefaultDriver()
  * @method static Email createEmailDriver()
- * @method static string channel()
+ * @method static mixed channel(string|null $channel)
+ * @method static string channelName()
  * @method static self hash(bool $hash = true)
  * @method static self length(int $length)
  * @method static self expiresIn(int $expiresIn)

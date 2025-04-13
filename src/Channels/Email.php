@@ -5,7 +5,9 @@ namespace Horlerdipo\SimpleOtp\Channels;
 use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
 use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
 use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
+use Horlerdipo\SimpleOtp\Contracts\ChannelContract;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpExpirationTimeException;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
@@ -14,17 +16,19 @@ use Horlerdipo\SimpleOtp\Mail\OtpMail;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Mail;
 
-class Email implements OtpContract
+class Email extends BaseChannel implements OtpContract, ChannelContract
 {
-    use GeneratesOtp, StoresOtp, VerifiesOtp;
 
+//
     public function __construct(
         public int $length,
         public int $expiresIn,
         public bool $hashToken,
         public string $template,
         public bool $numbersOnly,
-    ) {}
+    ) {
+        parent::__construct($this->length, $this->expiresIn, $this->hashToken, $this->template, $this->numbersOnly);
+    }
 
     /**
      * @param  array<string, mixed>  $templateData
@@ -54,16 +58,14 @@ class Email implements OtpContract
 
     }
 
-    public function channel(): string
-    {
-        return ChannelType::EMAIL->value;
-    }
-
     /**
-     * @param  array{use?: bool}  $options
-     * @return array{status: bool, message: string}
+     * @param string $destination
+     * @param string $purpose
+     * @param string $token
+     * @param array{use?: bool} $options
+     * @return VerifyOtpResponse
      */
-    public function verify(string $destination, string $purpose, string $token, array $options = []): array
+    public function verify(string $destination, string $purpose, string $token, array $options = []): VerifyOtpResponse
     {
         return $this->verifyOtp(
             destination: $destination,
@@ -71,5 +73,10 @@ class Email implements OtpContract
             purpose: $purpose,
             use: $options['use'] ?? true
         );
+    }
+
+    public function channelName(): string
+    {
+        return ChannelType::EMAIL->value;
     }
 }

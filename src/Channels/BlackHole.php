@@ -5,13 +5,14 @@ namespace Horlerdipo\SimpleOtp\Channels;
 use Horlerdipo\SimpleOtp\Concerns\GeneratesOtp;
 use Horlerdipo\SimpleOtp\Concerns\StoresOtp;
 use Horlerdipo\SimpleOtp\Concerns\VerifiesOtp;
+use Horlerdipo\SimpleOtp\Contracts\ChannelContract;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\InvalidOtpLengthException;
 
-class BlackHole implements OtpContract
+class BlackHole extends BaseChannel implements OtpContract, ChannelContract
 {
-    use GeneratesOtp, StoresOtp, VerifiesOtp;
 
     public string $token = '';
 
@@ -21,7 +22,9 @@ class BlackHole implements OtpContract
         public bool $hashToken,
         public string $template,
         public bool $numbersOnly,
-    ) {}
+    ) {
+        parent::__construct($this->length, $this->expiresIn, $this->hashToken, $this->template, $this->numbersOnly);
+    }
 
     /**
      * @param  array<string, mixed>  $templateData
@@ -44,10 +47,13 @@ class BlackHole implements OtpContract
     }
 
     /**
-     * @param  array{use?: bool}  $options
-     * @return array{status: bool, message: string}
+     * @param string $destination
+     * @param string $purpose
+     * @param string $token
+     * @param array{use?: bool} $options
+     * @return VerifyOtpResponse
      */
-    public function verify(string $destination, string $purpose, string $token, array $options = []): array
+    public function verify(string $destination, string $purpose, string $token, array $options = []): VerifyOtpResponse
     {
         return $this->verifyOtp(
             destination: $destination,
@@ -60,5 +66,10 @@ class BlackHole implements OtpContract
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    public function channelName(): string
+    {
+        return ChannelType::BLACKHOLE->value;
     }
 }

@@ -7,6 +7,7 @@ use Horlerdipo\SimpleOtp\Channels\BlackHole;
 use Horlerdipo\SimpleOtp\Channels\Email;
 use Horlerdipo\SimpleOtp\Concerns\ConfiguresOtp;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Horlerdipo\SimpleOtp\Enums\ChannelType;
 use Horlerdipo\SimpleOtp\Exceptions\OtpException;
 use Illuminate\Support\Manager;
@@ -40,12 +41,14 @@ class SimpleOtpManager extends Manager implements OtpContract
     }
 
     /**
-     * @param  array{use?: bool}  $options
-     * @return array{status: bool, message: string}
-     *
+     * @param string $destination
+     * @param string $purpose
+     * @param string $token
+     * @param array{use?: bool} $options
+     * @return VerifyOtpResponse
      * @throws OtpException
      */
-    public function verify(string $destination, string $purpose, string $token, array $options = []): array
+    public function verify(string $destination, string $purpose, string $token, array $options = []): VerifyOtpResponse
     {
 
         try {
@@ -85,8 +88,13 @@ class SimpleOtpManager extends Manager implements OtpContract
         );
     }
 
-    public function channel(): string
+    public function channelName(): string
     {
-        return $this->driver()->channel();
+        return $this->driver()->channelName();
+    }
+
+    public function channel(string $channel = null): mixed
+    {
+        return $this->driver($channel);
     }
 }
