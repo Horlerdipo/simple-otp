@@ -18,50 +18,83 @@ This Laravel package provides a flexible and pluggable One-Time Password (OTP) s
 [//]: # ()
 [//]: # (We highly appreciate you sending us a postcard from your hometown, mentioning which of our package&#40;s&#41; you are using. You'll find our address on [our contact page]&#40;https://spatie.be/about-us&#41;. We publish all received postcards on [our virtual postcard wall]&#40;https://spatie.be/open-source/postcards&#41;.)
 
-## Introduction
-- **Overview**
-- **Features**
-- **Requirements**
-- **Installation**
+[//]: # (## Introduction)
 
-## Quick Start
-- **Basic Setup**
-- **Sending an OTP**
-- **Verifying an OTP**
-- **Configuration Overview**
+[//]: # (- **Overview**)
 
-## Channel Guide
+[//]: # (- **Features**)
 
-### Email Channel
-- **Overview**
-- **Example Usage**
+[//]: # (- **Requirements**)
 
-### BlackHole Channel
-- **Overview**
-- **Example Usage**
+[//]: # (- **Installation**)
 
-## Advanced Usage
+[//]: # ()
+[//]: # (## Quick Start)
 
-### Adding Custom Channels
-- **Creating a custom channel class**
-- **Required methods**
-- **Registering the channel**
-- **Usage**
-- **Example Channel Implementation** 
+[//]: # (- **Basic Setup**)
 
-### Using the Manager Class directly
+[//]: # (- **Sending an OTP**)
 
-## Troubleshooting & FAQ
-- **Common Issues**
-- **Debugging Tips**
+[//]: # (- **Verifying an OTP**)
 
-## Testing
+[//]: # (- **Configuration Overview**)
 
-## Changelog
-## Contributing
-## Security Vulnerabilities
-## Credits
-## License
+[//]: # ()
+[//]: # (## Channel Guide)
+
+[//]: # ()
+[//]: # (### Email Channel)
+
+[//]: # (- **Overview**)
+
+[//]: # (- **Example Usage**)
+
+[//]: # ()
+[//]: # (### BlackHole Channel)
+
+[//]: # (- **Overview**)
+
+[//]: # (- **Example Usage**)
+
+[//]: # ()
+[//]: # (## Advanced Usage)
+
+[//]: # ()
+[//]: # (### Adding Custom Channels)
+
+[//]: # (- **Creating a custom channel class**)
+
+[//]: # (- **Required methods**)
+
+[//]: # (- **Registering the channel**)
+
+[//]: # (- **Usage**)
+
+[//]: # (- **Example Channel Implementation** )
+
+[//]: # ()
+[//]: # (### Using the Manager Class directly)
+
+[//]: # ()
+[//]: # (## Troubleshooting & FAQ)
+
+[//]: # (- **Common Issues**)
+
+[//]: # (- **Debugging Tips**)
+
+[//]: # ()
+[//]: # (## Testing)
+
+[//]: # ()
+[//]: # (## Changelog)
+
+[//]: # (## Contributing)
+
+[//]: # (## Security Vulnerabilities)
+
+[//]: # (## Credits)
+
+[//]: # (## License)
 
 
 ## Introduction
