@@ -4,13 +4,14 @@ namespace Horlerdipo\SimpleOtp\Facades;
 
 use Horlerdipo\SimpleOtp\Channels\Email;
 use Horlerdipo\SimpleOtp\Contracts\OtpContract;
+use Horlerdipo\SimpleOtp\DTOs\VerifyOtpResponse;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Horlerdipo\SimpleOtp\SimpleOtpManager
  *
  * @method static void send(string $destination, string $purpose, array $templateData = [])
- * @method static [] verify(string $destination, string $purpose, string $token, array $options = [])
+ * @method static VerifyOtpResponse verify(string $destination, string $purpose, string $token, array $options = [])
  * @method static self template(string $template)
  * @method static mixed|string getDefaultDriver()
  * @method static Email createEmailDriver()

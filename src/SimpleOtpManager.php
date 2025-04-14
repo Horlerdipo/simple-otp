@@ -31,10 +31,10 @@ class SimpleOtpManager extends Manager implements OtpContract
      *
      * @throws OtpException
      */
-    public function send(string $destination, string $purpose, array $templateData = []): void
+    public function send(string $destination, string $purpose, array $templateData = [], string $queue = 'default'): void
     {
         try {
-            $this->driver()->send(destination: $destination, purpose: $purpose, templateData: $templateData);
+            $this->driver()->send(destination: $destination, purpose: $purpose, templateData: $templateData, queue: $queue);
         } catch (Exception $e) {
             throw new OtpException('Failed to send OTP: '.$e->getMessage());
         }

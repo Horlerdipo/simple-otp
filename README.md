@@ -191,7 +191,7 @@ You can change the default channel on the config file at runtime as well.
 ### Sending an OTP
 ```php
 use Horlerdipo\SimpleOtp\Facades\SimpleOtp;
-SimpleOtp::send(destination: "test@laravel.com", purpose: "login");
+SimpleOtp::send(destination: "test@laravel.com", purpose: "login", queue: "default");
 ```
 ### Verifying an OTP
 ```php
@@ -200,6 +200,12 @@ $response = SimpleOtp::verify(destination: "test@laravel.com", purpose: "login",
 ```
 The ```verify()``` method returns a ```VerifyOtpResponse``` object that has a ```status``` which is a boolean that is true if the OTP is 
 correct and false if it is not, the object also has ```message``` property that contains the reason why the OTP is not correct.
+If for any reason, you would like the otp not to be used immediately, you can pass ```['use' => false]``` as the fourth parameter for the ```verify()```
+endpoint. 
+```php
+use Horlerdipo\SimpleOtp\Facades\SimpleOtp;
+$response = SimpleOtp::verify(destination: "test@laravel.com", purpose: "login", token: "267799", options: ['use' => false]);
+```
 
 ### Configuration Overview
 You can configure OTP generation using method chaining before calling ```send()``` method
@@ -221,7 +227,7 @@ SimpleOtp::channel(\Horlerdipo\SimpleOtp\Enums\ChannelType::EMAIL->value)
     ->expiresIn(1)
     ->numbersOnly()
     ->hash(false)
-    ->send("test@laravel.com", "testing");
+    ->send(destination: "test@laravel.com", purpose: "testing", queue: "default");
 ```
 ## Channel Guide 
 
@@ -233,7 +239,7 @@ Ensure your mail configuration is properly set in the .env. The email template i
 ```php
 use Horlerdipo\SimpleOtp\Facades\SimpleOtp;
 SimpleOtp::channel('email')
-    ->send('test@laravel.com', 'password_reset');
+    ->send(destination: 'test@laravel.com', purpose: 'password_reset', queue: 'email');
 ```
 ### BlackHole Channel
 #### Overview
@@ -264,7 +270,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->booting(function () {
-            SimpleOtpManager::extend('sms', function () {
+            \Horlerdipo\SimpleOtp\Facades\SimpleOtp::extend('sms', function () {
                 return new SmsChannel(
                     length: config()->get('simple-otp.length'),
                     expiresIn: config()->get('simple-otp.expires_in'),
@@ -305,7 +311,7 @@ class SmsChannel extends BaseChannel implements OtpContract, ChannelContract
     /**
      * @throws InvalidOtpLengthException
      */
-    public function send(string $destination, string $purpose, array $templateData): void
+    public function send(string $destination, string $purpose, array $templateData = [], string $queue = 'default'): void
     {
         $token = $this->generateOtp($this->length, $this->numbersOnly);
         $this->storeOtp(

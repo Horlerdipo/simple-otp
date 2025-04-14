@@ -15,4 +15,12 @@ class VerifyOtpResponse
     {
         return $this->message;
     }
+
+    public function __toArray(): array
+    {
+        return [
+            'status' => $this->status,
+            'message' => $this->message,
+        ];
+    }
 }

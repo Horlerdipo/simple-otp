@@ -119,6 +119,7 @@ abstract class BaseChannel implements ChannelContract
     {
 
         $otpRecord = OtpModel::query()
+            ->where('destination_type', $this->channelName())
             ->where('destination', $destination)
             ->where('purpose', $purpose)
             ->orderBy('created_at', 'desc')
