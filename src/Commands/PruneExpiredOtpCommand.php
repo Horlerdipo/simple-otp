@@ -29,11 +29,10 @@ class PruneExpiredOtpCommand extends Command
     {
 
         $hours = intval($this->argument('hours'));
-        $time = Carbon::now()->addHours($hours);
+        $time = Carbon::now()->subHours($hours);
 
         $affectedRows = Otp::query()
-            ->where('created_at', '<', $time)
-            ->where('expires_at', '<=', Carbon::now())
+            ->where('expires_at', '<', $time)
             ->delete();
 
         $this->info("Successfully deleted $affectedRows old and expired OTPs from the last $hours hours");

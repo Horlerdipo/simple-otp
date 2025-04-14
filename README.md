@@ -361,6 +361,20 @@ Route::get('/verify-otp', function (\Illuminate\Http\Request $request, \Horlerdi
 You can as well call the Channel classes directly if you even want to go even lower, we currently have the following channels
 ```\Horlerdipo\SimpleOtp\Channels\Email``` and the ```\Horlerdipo\SimpleOtp\Channels\BlackHole``` classes
 
+### Pruning Old OTPs
+To avoid the ```otps``` table from getting filled up, you should add the ```simple-otp:prune-expired-otp``` command to your scheduler.
+This also takes an input of the hours how far back the expired OTP should be, the default is ```24```.
+```php
+    protected function schedule(Schedule $schedule): void
+    {
+        //this will run daily and delete otp that have expired in the last 24 hours
+        $schedule->command('simple-otp:prune-expired-otp')->daily();
+        
+        //if you are like me and you prefer classes instead, this will do the same thing as the above
+        $schedule->command(PruneExpiredOtpCommand::class)->daily();
+    }
+```
+
 ## Troubleshooting & FAQ
 - OTP not being delivered
 Check mail config or your custom channel integration
